@@ -42,7 +42,7 @@ class Unet(nn.Module):
         self.pool2 = nn.MaxPool2d(kernel_size=2)
         self.pool3 = nn.MaxPool2d(kernel_size=2)
         self.pool4 = nn.MaxPool2d(kernel_size=2)
-
+        # two way of upsampling 
         '''
         self.up1 = nn.UpsamplingBilinear2d(scale_factor=2)
         self.up2 = nn.UpsamplingBilinear2d(scale_factor=2)
@@ -68,7 +68,7 @@ class Unet(nn.Module):
         pool4 = self.pool4(conv4)
 
         conv5 = self.conv5(pool4)
-
+        #use cat as skip connection
         up1 = self.up1(conv5)
         cat1 = torch.cat((up1, conv4), dim=1)
         conv6 = self.conv6(cat1)
