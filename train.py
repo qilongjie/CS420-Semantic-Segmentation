@@ -16,11 +16,12 @@ TRAIN_LABELS_DIR = os.path.join(ROOT, 'dataset/train_label')
 TEST_IMGS_DIR = os.path.join(ROOT, 'dataset/test_img')
 TEST_LABELS_DIR = os.path.join(ROOT, 'dataset/test_label')
 OUTPUT_DIR = os.path.join(ROOT,'output_lr=0.002')
-
+#parameters
 batch_size = 2
 learn_rate = 0.002
 num_epochs = 100
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 train_dataset = ISBIDataset(imgs_dir=TRAIN_IMGS_DIR, labels_dir=TRAIN_LABELS_DIR, flip=True)
 test_dataset = ISBIDataset(imgs_dir=TEST_IMGS_DIR, labels_dir=TEST_LABELS_DIR, flip=False)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
@@ -55,10 +56,11 @@ for epoch in range(1,num_epochs+1):
                                                                                                     err.item()))
 if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+#save the final model    
 torch.save(
-        {'net': model.state_dict(),'optim': optim.state_dict()},
-        os.path.join(OUTPUT_DIR, 'model.pth'),
-    )
+    {'net': model.state_dict(),'optim': optim.state_dict()},
+    os.path.join(OUTPUT_DIR, 'model.pth'),
+)
 # test
 with torch.no_grad():
     model.eval()
@@ -82,6 +84,5 @@ with torch.no_grad():
 
         for j in range(label.shape[0]):
             current = batch_size*(batch_idx-1)+j
-
             plt.imsave(os.path.join(OUTPUT_DIR, f'label_{current:04}.png'), label[j].squeeze(), cmap='gray')
             plt.imsave(os.path.join(OUTPUT_DIR, f'output_{current:04}.png'), output[j].squeeze(), cmap='gray')
